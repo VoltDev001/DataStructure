@@ -20,9 +20,10 @@ int deleteAtStart(Node *p);
 int deleteAtPos(Node *p, int pos);
 int isSorted(Node *p);
 void delDuplicate(Node *p);
+void reverse(Node *p);
 
 int main(){
-    int arr[] = {0,5,12,15,15,20,25,40};
+    int arr[] = {0,5,12,15,20,30,40,45};
 
     makeNode(arr, 8);
 
@@ -43,43 +44,76 @@ int main(){
     //insertAtStart(-1);
     //insert(0, -1);
     //insertAtEnd(10);
-    // insertAfterLess(45);
-    // insertAtEnd(50);
+    //insertAfterLess(45);
+    //insertAtEnd(50);
     
     // int del = deleteAtStart(first);
     
-    // int del = deleteAtPos(first, 4);
-    // if(del != INT16_MIN)
+    //  //int del = deleteAtPos(first, 4);
+    // if(del != INT32_MIN)
     //     cout<<"Deleted Node and value = "<<del<<endl;
     // else
     //     cout<<"No Linked List is present or position out of bound."<<endl;
 
-    // if(isSorted(first))
+    // if(isSorted(first)){
     //     cout<<"Sorted."<<endl;
+    //     delDuplicate(first);
+    // }
     // else
     //     cout<<"Not Sorted."<<endl;
+    reverse(first);
     display(first);
 
     return 0;
 }
 
-// void delDuplicate(Node *p){
-//     Node *q = NULL;
-//     if(p){
-//         q = p;
-//         p = p->next;
-//     }
-//     while(p){
-//         if(q->data == p->data){
-//             q->next = p->next;
-//         }
-//         q = p;
-//         p = p->next;
-//     }
-// }
+void reverse(Node *p){
+    int c = count(p);
+    if(c){
+        int rev[c];
+        for(int i=0; i<c; i++){
+            rev[i] = p->data;
+            p = p->next;
+        }
+        p = first;
+        for(int i=c-1; i>=0; i--){
+            p->data = rev[i];
+            p = p->next;
+        }
+    }
+    else 
+        return;
+}
+
+void delDuplicate(Node *p){
+    if(!p)
+        return;
+    Node *q = p->next;
+    while(q && q!=last){
+        if(q->data == p->data){
+            p->next = q->next;
+            delete q;
+            q = p->next;
+        }
+        else{
+            p = q;
+            q = q->next;
+        }
+    }
+    if(q){
+        if(q->data == p->data){
+            p->next= q->next;
+            delete q;
+            last = p;
+        }
+    }
+}
+
 
 int isSorted(Node *p){
-    int x = INT16_MIN;
+    int x = INT32_MIN;
+    if(!p)
+        return 0;
     while(p){
         if(p->data < x)
             return 0;
@@ -92,52 +126,55 @@ int isSorted(Node *p){
 }
 
 int deleteAtPos(Node *p, int pos){
-    int x = INT16_MIN;
-    if(pos == 0 || pos == 1){
+    int x = INT32_MIN;
+    if(p == NULL || pos < 1)
+        return x;
+    if(pos == 1){
         return deleteAtStart(first);
     }
-    if(p != NULL){
-        Node *r = NULL;
-        for(int i=0; i<pos-1 && p; i++){
-            r = p;
-            p = p->next;
-        }
-        if(p){
-            r->next = p->next;
-            x = p->data;
-            if(p == last)
-                last = r;
-        }
+    Node *r = NULL;
+    for(int i=0; i<pos-1 && p; i++){
+        r = p;
+        p = p->next;
+    }
+    if(p){
+        r->next = p->next;
+        x = p->data;
+        if(p == last)
+            last = r;
+        delete p;
+        return x;
     }
     return x;
 }
 
 int deleteAtStart(Node *p){
-    int x = INT16_MIN;
+    int x = INT32_MIN;
     if(p != NULL){
         x = p->data;
         if(p == last){
             last = NULL;
             first = NULL;
         }
-        else
+        else{
             first = p->next;
+        }
+        delete p;
     }
     return x;
 }
 
 void insertAfterLess(int num){
     Node *p = first;
-    Node *q = first;
+    Node *q = NULL;
     if(p == NULL || p->data > num)
         insertAtStart(num);
     else{
         while(p->data < num && p != last){
-            if(p != first)
-                q = q->next;
+            q = p;
             p = p->next;
         }
-        if(p == last)
+        if(p == last && p->data < num)
             insertAtEnd(num);
         else{
             Node *t = new Node;
@@ -149,7 +186,9 @@ void insertAfterLess(int num){
 }
 
 void insert(int pos, int num){
-    if(pos == 0 ){
+    if(pos<0)
+        return;
+    else if(pos == 0 ){
         insertAtStart(num);
     }
     else{
@@ -220,7 +259,7 @@ int max(Node* n){
     }
     else{
         cout<<"There is no node."<<endl;
-        return INT16_MIN;
+        return INT32_MIN;
     }
 }
 

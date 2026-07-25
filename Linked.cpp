@@ -4,7 +4,7 @@ using namespace std;
 struct Node{
     int data;
     struct Node* next;
-}*first1, *last1 , *first2, *last2;
+}*first1, *last1 , *first2, *last2, *third=NULL , *last=NULL;
 
 void makeNode(int a[], int n, Node* &f, Node* &l);
 void display(Node *p);
@@ -22,12 +22,15 @@ int isSorted(Node *p);
 void delDuplicate(Node *p, Node* &l);
 void reverse(Node* &f);
 void reverseLinks(Node* &f,  Node* &l);
+void concatenation(Node* &l1, Node* &f2);
+void merge(Node* &f1, Node* &f2);
+int isLinear(Node *p);
 
 int main(){
-    int arr[] = {0,5,15,15,20,20,40,45};
+    int arr1[] = {0, 5, 6, 20}, arr2[] = {2, 7, 9, 15};
 
-    makeNode(arr, 8, first1, last1);
-    makeNode(arr, 4, first2, last2);
+    makeNode(arr1, 4, first1, last1);
+    makeNode(arr2, 4, first2, last2);
 
     display(first1);
     cout<<endl;
@@ -51,10 +54,10 @@ int main(){
     // insertAtEnd(first1, last1, 10);
     // insertAfterLess(first2, last2, 13);
     // insertAtEnd(first2, last2, 50);
+    // concatenation(last1, first2);
+    // int del = deleteAtStart(first2, last2);
     
-    //int del = deleteAtStart(first1, last1);
-    
-    // int del = deleteAtPos(first1, last1, 4);
+    // // int del = deleteAtPos(first1, last1, 4);
     // if(del != INT32_MIN)
     //     cout<<"Deleted Node and value = "<<del<<endl;
     // else
@@ -70,11 +73,82 @@ int main(){
     // reverseLinks(first2, last2);
     // insertAtStart(first1, last1, 50);
     // insertAtEnd(first2, last2, -4);
-    display(first1);
+    // concatenation(last1, first2);
+    // display(first1);
+    // cout<<endl;
+    // display(first2);
+    //merge(first1, first2);
+    // insertAtEnd(third, last, 50);
+    //display(third);
+    // int iL = isLinear(first1);
+    // if(iL)
+    //     cout<<"Linked List is linear."<<endl;
+    // else
+    //     cout<<"Linked List is not linear."<<endl;
+    // last2->next = first2->next;
+    // int iL2 = isLinear(first2);
+    // if(iL2)
+    //     cout<<"Linked List is linear."<<endl;
+    // else
+    //     cout<<"Linked List is not linear."<<endl;
     cout<<endl;
-    display(first2);
 
     return 0;
+}
+
+int isLinear(Node *p){
+    Node *q = p->next;
+    while(p && q->next){
+        if(q == p){
+            return 0;
+        }
+        q = q->next->next;
+        p = p->next;
+    }
+    return 1;
+}
+
+void merge(Node* &f1, Node* &f2){
+    if(f1->data < f2->data){
+        third = f1;
+        last = f1;
+        f1 = f1->next;
+        last->next = NULL;
+    }
+    else{
+        third = f2;
+        last = f2;
+        f2 = f2->next;
+        last->next = NULL;
+    }
+    while(f1 && f2){
+        if(f1->data < f2->data){
+            last->next = f1;
+            last = f1;
+            f1 = f1->next;
+        }
+        else{
+            last->next = f2;
+            last = f2;
+            f2 = f2->next;
+        }
+        last->next = NULL;
+    }
+    if(f1){
+        last->next = f1;
+        last = last1;
+    }
+    else{
+        last->next = f2;
+        last = last2;
+    }
+}
+
+void concatenation(Node* &l1, Node* &f2){
+    if(l1 && f2){
+        l1->next = f2;
+        f2 = NULL;
+    }
 }
 
 void reverseLinks(Node* &f,  Node* &l){

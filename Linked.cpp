@@ -4,70 +4,94 @@ using namespace std;
 struct Node{
     int data;
     struct Node* next;
-}*first, *last;
+}*first1, *last1 , *first2, *last2;
 
-void makeNode(int a[], int n);
+void makeNode(int a[], int n, Node* &f, Node* &l);
 void display(Node *p);
 void inverseDisplay(Node *p);
 int count(Node *p);
 int max(Node *n);
 Node* search(Node *p, int key);
-void insertAtStart(int num);
-void insertAtEnd(int num);
-void insert(int pos, int num);
-void insertAfterLess(int num);
-int deleteAtStart(Node *p);
-int deleteAtPos(Node *p, int pos);
+void insertAtStart(Node* &f, Node* &l, int num);
+void insertAtEnd(Node* &f, Node* &l, int num);
+void insert(Node* &f, Node* &l, int pos, int num);
+void insertAfterLess(Node* &f, Node* &l, int num);
+int deleteAtStart(Node* &f, Node* &l);
+int deleteAtPos(Node* &f, Node* &l, int pos);
 int isSorted(Node *p);
-void delDuplicate(Node *p);
-void reverse(Node *p);
+void delDuplicate(Node *p, Node* &l);
+void reverse(Node* &f);
+void reverseLinks(Node* &f,  Node* &l);
 
 int main(){
-    int arr[] = {0,5,12,15,20,30,40,45};
+    int arr[] = {0,5,15,15,20,20,40,45};
 
-    makeNode(arr, 8);
+    makeNode(arr, 8, first1, last1);
+    makeNode(arr, 4, first2, last2);
 
-    display(first);
+    display(first1);
     cout<<endl;
+    display(first2);
+    cout<<endl;
+    
     // cout<<endl<<"Inverse Diplay:";
-    // inverseDisplay(first);
+    // inverseDisplay(first1);
 
-    // cout <<endl<< "Number of nodes:" << count(first) << endl;
+    // cout <<endl<< "Number of nodes:" << count(first2) << endl;
 
-    // cout<<"Maximum data: "<<max(first)<<endl;
+    // cout<<"Maximum data: "<<max(first1)<<endl;
 
-    // Node *found = search(first, 10);
+    // Node *found = search(first1, 12);
     // if(found == NULL)
     //     cout<<"Data not in Linked List."<<endl;
     // else
     //     cout<<"Data is at: "<<found<<endl;
-    //insertAtStart(-1);
-    //insert(0, -1);
-    //insertAtEnd(10);
-    //insertAfterLess(45);
-    //insertAtEnd(50);
+    // insertAtStart(first1, last1, -1);
+    // insert(first1, last1, 4, 18);
+    // insertAtEnd(first1, last1, 10);
+    // insertAfterLess(first2, last2, 13);
+    // insertAtEnd(first2, last2, 50);
     
-    // int del = deleteAtStart(first);
+    //int del = deleteAtStart(first1, last1);
     
-    //  //int del = deleteAtPos(first, 4);
+    // int del = deleteAtPos(first1, last1, 4);
     // if(del != INT32_MIN)
     //     cout<<"Deleted Node and value = "<<del<<endl;
     // else
     //     cout<<"No Linked List is present or position out of bound."<<endl;
 
-    // if(isSorted(first)){
+    // if(isSorted(first1)){
     //     cout<<"Sorted."<<endl;
-    //     delDuplicate(first);
+    //     delDuplicate(first1, last1);
     // }
     // else
     //     cout<<"Not Sorted."<<endl;
-    reverse(first);
-    display(first);
+    // reverse(first1);
+    // reverseLinks(first2, last2);
+    // insertAtStart(first1, last1, 50);
+    // insertAtEnd(first2, last2, -4);
+    display(first1);
+    cout<<endl;
+    display(first2);
 
     return 0;
 }
 
-void reverse(Node *p){
+void reverseLinks(Node* &f,  Node* &l){
+    Node *p = f, *q = NULL, *r = NULL;
+    while(p){
+        r = q;
+        q = p;
+        p = p->next;
+        q->next = r;
+        if(!r)
+            l = q;
+    }
+    f = q;
+}
+
+void reverse(Node* &f){
+    Node *p = f;
     int c = count(p);
     if(c){
         int rev[c];
@@ -75,7 +99,7 @@ void reverse(Node *p){
             rev[i] = p->data;
             p = p->next;
         }
-        p = first;
+        p = f;
         for(int i=c-1; i>=0; i--){
             p->data = rev[i];
             p = p->next;
@@ -85,11 +109,11 @@ void reverse(Node *p){
         return;
 }
 
-void delDuplicate(Node *p){
+void delDuplicate(Node *p, Node* &l){
     if(!p)
         return;
     Node *q = p->next;
-    while(q && q!=last){
+    while(q && q!=l){
         if(q->data == p->data){
             p->next = q->next;
             delete q;
@@ -104,7 +128,7 @@ void delDuplicate(Node *p){
         if(q->data == p->data){
             p->next= q->next;
             delete q;
-            last = p;
+            l = p;
         }
     }
 }
@@ -125,12 +149,13 @@ int isSorted(Node *p){
     return 1;
 }
 
-int deleteAtPos(Node *p, int pos){
+int deleteAtPos(Node* &f, Node* &l, int pos){
     int x = INT32_MIN;
+    Node *p =  f;
     if(p == NULL || pos < 1)
         return x;
     if(pos == 1){
-        return deleteAtStart(first);
+        return deleteAtStart(f, l);
     }
     Node *r = NULL;
     for(int i=0; i<pos-1 && p; i++){
@@ -140,42 +165,43 @@ int deleteAtPos(Node *p, int pos){
     if(p){
         r->next = p->next;
         x = p->data;
-        if(p == last)
-            last = r;
+        if(p == l)
+            l = r;
         delete p;
         return x;
     }
     return x;
 }
 
-int deleteAtStart(Node *p){
+int deleteAtStart(Node* &f, Node* &l){
+    Node *p = f;
     int x = INT32_MIN;
     if(p != NULL){
         x = p->data;
-        if(p == last){
-            last = NULL;
-            first = NULL;
+        if(p == l){
+            l = NULL;
+            f = NULL;
         }
         else{
-            first = p->next;
+            f = p->next;
         }
         delete p;
     }
     return x;
 }
 
-void insertAfterLess(int num){
-    Node *p = first;
+void insertAfterLess(Node* &f, Node* &l, int num){
+    Node *p = f;
     Node *q = NULL;
     if(p == NULL || p->data > num)
-        insertAtStart(num);
+        insertAtStart(f, l, num);
     else{
-        while(p->data < num && p != last){
+        while(p->data < num && p != l){
             q = p;
             p = p->next;
         }
-        if(p == last && p->data < num)
-            insertAtEnd(num);
+        if(p == l && p->data < num)
+            insertAtEnd(f, l, num);
         else{
             Node *t = new Node;
             t->data = num;
@@ -185,14 +211,14 @@ void insertAfterLess(int num){
     }
 }
 
-void insert(int pos, int num){
+void insert(Node* &f, Node* &l, int pos, int num){
     if(pos<0)
         return;
     else if(pos == 0 ){
-        insertAtStart(num);
+        insertAtStart(f, l, num);
     }
     else{
-        Node *p = first;
+        Node *p = f;
         for(int i=0; p && i<pos-1; i++){
             p = p->next;
         }
@@ -204,36 +230,36 @@ void insert(int pos, int num){
         t->data = num;
         t->next = p->next;
         p->next = t;
-        if(p == last)
-            last = t;
+        if(p == l)
+            l = t;
     }
 }
 
-void insertAtEnd(int num){
-    if(last != NULL){
+void insertAtEnd(Node* &f, Node* &l, int num){
+    if(l != NULL){
         Node *t = new Node;
         t->data = num;
         t->next = NULL;
-        last->next = t;
-        last = t;
+        l->next = t;
+        l = t;
     }
     else{
-        insertAtStart(num);
+        insertAtStart(f, l, num);
     }
 }
 
-void insertAtStart(int num){
-    if(first != NULL){
+void insertAtStart(Node* &f, Node* &l, int num){
+    if(f != NULL){
         Node* t = new Node;
         t->data = num;
-        t->next = first;
-        first = t;
+        t->next = f;
+        f = t;
     }
     else{
-        first = new Node;
-        first->data = num;
-        first->next = NULL;
-        last = first;
+        f = new Node;
+        f->data = num;
+        f->next = NULL;
+        l = f;
     }
 }
 
@@ -286,18 +312,18 @@ void display(Node *p){
     }
 } 
 
-void makeNode(int a[], int n){
+void makeNode(int a[], int n, Node* &f, Node* &l){
     if(a == NULL || n<=0)
         return;
-    first = new Node;
-    first->data = a[0];
-    first->next = NULL;
-    last = first;
+    f = new Node;
+    f->data = a[0];
+    f->next = NULL;
+    l = f;
     for(int i=1; i<n; i++){
         Node *p = new Node;
         p->data = a[i];
         p->next = NULL;
-        last->next = p;
-        last = p;
+        l->next = p;
+        l = p;
    }
 }

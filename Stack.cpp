@@ -60,11 +60,11 @@ int isEmpty(Stack st){
 int main(){
     Stack st;
     createStack(&st);
-    //push(&st, 1);
-    //push(&st, 2);
-    //push(&st, 3);
-    //push(&st, 4);
-    //push(&st, 5);
+    push(&st, 1);
+    push(&st, 2);
+    push(&st, 3);
+    push(&st, 4);
+    push(&st, 5);
     // push(&st, 6);
     // cout<<"Popped Value : "<<pop(&st)<<endl;
     // cout<<"Popped Value : "<<pop(&st)<<endl;
@@ -72,9 +72,10 @@ int main(){
     // cout<<"Popped Value : "<<pop(&st)<<endl;
     // cout<<"Popped Value : "<<pop(&st)<<endl;
     // cout<<"Popped Value : "<<pop(&st)<<endl;
-    cout<<"Element is : "<<peek(st, 7)<<endl;
-    cout<<isEmpty(st)<<endl;
-    cout<<isFull(st)<<endl;
+    // cout<<"Element is : "<<peek(st, 7)<<endl;
+    // cout<<isEmpty(st)<<endl;
+    // cout<<isFull(st)<<endl;
+    cout<<findTop(st)<<endl;
     display(st);
     return 0;
 }

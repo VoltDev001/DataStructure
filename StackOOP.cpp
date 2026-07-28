@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string.h>
+#include<string>
 using namespace std;
 
 class Node{
@@ -33,7 +34,7 @@ public:
     char pop();
     //void pop();
     int peek(int pos);
-    int findTop();
+    char getTop();
     int isEmpty();
     int isFull();
 };
@@ -91,10 +92,11 @@ int Stack::peek(int pos){
     return p->data;
 }
 
-int Stack :: findTop(){
+char Stack :: getTop(){
     if(top)
         return top->data;
-    return INT32_MIN;
+    return NULL;
+    //return INT32_MIN;
 }
 
 int Stack :: isEmpty(){
@@ -131,22 +133,64 @@ bool parenthesisMatch(string exp){
     for(int i = 0; i<len; i++){
         char ch = exp[i];
         if(ch == '(' || ch == '[' || ch == '{')
-            st.push(exp[i]);
+            st.push(ch);
         else if(ch == ')' || ch == ']' || ch == '}'){
             if(st.isEmpty())
                 return false;
             char p = st.pop();
-            if(p == 40){ 
-                if(ch-p != 1)
-                    return false;
-            }
-            else{
-                if(ch-p != 2)
-                    return false;
+            // if(p == 40){ 
+            //     if(ch-p != 1)
+            //         return false;
+            // }
+            // else{
+            //     if(ch-p != 2)
+            //         return false;
+            // }
+            if ((ch == ')' && p != '(') || (ch == '}' && p != '{') || (ch == ']' && p != '[')) {
+                return false;
             }
         }
     }
     return st.isEmpty();
+}
+
+int isOperator(char ch){
+    if(ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%')
+        return 1;
+    return 0;
+}
+
+int precedence(char ch){
+    if(ch == '+' || ch == '-')
+        return 1;
+    else if(ch == '*' || ch == '/' || ch =='%')
+        return 2;
+    return 0;
+}
+
+string infixToPostfix(string infix){
+    string post = "";
+    // if(!parenthesisMatch(infix))
+    //     return "Invalid";
+    Stack st;
+    int len = infix.length(), j=0;
+    for(int i = 0; i<len; i++){
+        char ch = infix[i];
+        if(isOperator(ch)){
+            if(st.isEmpty())
+                st.push(ch);
+            else{
+                while(!st.isEmpty() && precedence(st.getTop()) >= precedence(ch))
+                    post+=st.pop();
+                st.push(ch);
+            }
+        }
+        else
+            post+=ch;
+    }
+    while(!st.isEmpty())
+        post+=st.pop();
+    return post;
 }
 
 int main(){
@@ -156,7 +200,6 @@ int main(){
     // st.push(10);
     // st.push(18);
     // st.push(45);
-
     // st.display();
     // cout << "Popped: " << st.pop() << endl;
     // cout << "Popped: " << st.pop() << endl;
@@ -164,7 +207,11 @@ int main(){
     // cout << "Top Element: " << st.findTop() << endl;
     // cout << "Is Empty: " << st.isEmpty() << endl;
     // cout << "Is Full: " << st.isFull() << endl;
-    string exp = "{[((a*b)+(c-d))]";
-    cout<<"Parenthesis Matching : "<<parenthesisMatch(exp)<<endl;
+
+    // string exp = "{[((a*b)+(c-d))]";
+    // cout<<"Parenthesis Matching : "<<parenthesisMatch(exp)<<endl;
+
+    string infix = "a*b+c-d/e*z+w*h";
+    cout<<"Postfix of "<<infix<<" : "<<infixToPostfix(infix)<<endl;
     return 0;
 }

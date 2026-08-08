@@ -1,7 +1,7 @@
 #include<iostream>
 using namespace std;
 
-int a[9] = {1,2,3,4,5,6,7,8,9};
+int a[9] = {7,3,5,2,8,6,9,4,11};
 
 void swapValues(int *x, int *y){
     int temp = *x;

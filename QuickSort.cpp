@@ -21,11 +21,7 @@ int findProperPlace(int up, int down, int pivot){
             if(up > down)
                 break;
         }
-        if(up > down)
-            break;
         swapValues(&a[up], &a[down]);
-        up++;
-        down--;
     }
     return down;
 }
@@ -34,8 +30,8 @@ void quickSort(int start, int end){
     if(start >= end)
         return;
     int pivot = a[start];
-    int pivotplace = findProperPlace(start+1, end, pivot);
-    swapValues(&a[start], &a[pivotplace]);
+    int pivotplace = findProperPlace(start, end, pivot);
+    swapValues(&pivot, &a[pivotplace]);
     quickSort(start, pivotplace-1);
     quickSort(pivotplace+1, end);
 }
